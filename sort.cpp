@@ -6,6 +6,7 @@
 #include <vector>  
 #include <stdio.h>
 #include <string>
+#include "sort_functions.h"
 using namespace std;
 
 #define SCREEN_WIDTH 1200
