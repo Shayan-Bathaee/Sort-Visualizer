@@ -67,10 +67,23 @@ int main(int argc, char* argv[]) {
       cout << "Initialization failure" << endl;
    }
 
-   // display a white box
-   SDL_Rect background = {SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2};
+   // build hardcoded array
+   vector<int> hard_array;
+   for (int i = 1; i < 300; i++) {
+      hard_array.push_back(rand() % 800 + 1); // push random number between 1 and 800
+   }
+
+   // display hardcoded array
+   int barwidth = 3;
+   int space = 1;
+   int current_start_pos = 0;
    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-   SDL_RenderFillRect(renderer, &background);
+   for (int i = 0; i < (int)hard_array.size(); i++) {
+      SDL_Rect new_bar = {current_start_pos + i, SCREEN_HEIGHT - hard_array[i], barwidth, hard_array[i]}; // define the bar dimensions
+      SDL_RenderFillRect(renderer, &new_bar); 
+      SDL_PumpEvents(); // push the new change
+      current_start_pos = current_start_pos + barwidth + space;
+   }
    SDL_RenderPresent(renderer);
    
    // keep the window up
