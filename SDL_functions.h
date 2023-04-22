@@ -1,42 +1,57 @@
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_render.h>
 
 #define SCREEN_WIDTH 1200
 #define SCREEN_HEIGHT 800
 #define MAX_ARRAY_LEN SCREEN_WIDTH / 4
 
-/*
-Initializes SDL, creating the window.
-*/
-void SDLinit(SDL_Window* window, SDL_Surface* screen_surface) {
+/**
+ * @brief Initializes SDL window and renderer, sets background to black
+ * 
+ * @param window a pointer to the window
+ * @param renderer a pointer to the renderer
+ * @return true if SDL was initialized correctly
+ * @return false if SDL initialization failed
+ */
+bool SDLinit(SDL_Window** window, SDL_Renderer** renderer) {
    // initialize sdl
    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-      cout << "SDL Couldn't be initialized\n";
+      cout << "SDL could not be initialized. SDL Error: " << SDL_GetError() << endl;
+      return false;
    }
-
-   else {
-      // create the window (undefined start position)
-      window = SDL_CreateWindow("First SDL Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-      if (window == NULL) {
-         cout << "Window could not be made. Error " << SDL_GetError() << "\n";
-      }
-      else {
-         // set the screen surface and fill it black
-         screen_surface = SDL_GetWindowSurface(window);
-         SDL_FillRect(screen_surface, NULL, SDL_MapRGB(screen_surface->format, 0x00, 0x00, 0x00));
-
-         // update the surface
-         SDL_UpdateWindowSurface(window);
-      }
+   // create window
+   *window = SDL_CreateWindow("Sort-Visualizer, by Shayan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+   if (*window == NULL) {
+      cout << "Window could not be created. SDL Error: " << SDL_GetError() << endl;
    }
+   // create renderer for the window
+   *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED);
+   if (*renderer == NULL) {
+      cout << "Renderer could not be created. SDL Error: " << SDL_GetError() << endl;
+      return false;
+   }
+   // fill background black
+   SDL_SetRenderDrawColor(*renderer, 0x00, 0x00, 0x00, 0xFF);
+   SDL_RenderClear(*renderer);
+   SDL_RenderPresent(*renderer);
+
+   return true;
 }
 
-/*
-Properly destroys the window and quits SDL
-*/
-void SDLclose(SDL_Window* window) {
-   SDL_DestroyWindow(window);
+/**
+ * @brief Properly closes SDL by destroying renderer and window
+ * 
+ * @param window 
+ * @param renderer 
+ */
+void SDLclose(SDL_Window** window, SDL_Renderer** renderer) {
+   SDL_DestroyRenderer(*renderer);
+   SDL_DestroyWindow(*window);
+   *renderer = NULL;
+   *window = NULL;
    SDL_Quit();
 }

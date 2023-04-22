@@ -62,11 +62,27 @@ int main(int argc, char* argv[]) {
 
    /* Set up SDL window */
    SDL_Window* window = NULL;
-   SDL_Surface* screen_surface = NULL;
-   SDLinit(window, screen_surface);
+   SDL_Renderer* renderer = NULL;
+   if (!SDLinit(&window, &renderer)) {
+      cout << "Initialization failure" << endl;
+   }
+
+   // display a white box
+   SDL_Rect background = {SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2};
+   SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+   SDL_RenderFillRect(renderer, &background);
+   SDL_RenderPresent(renderer);
    
-   // hacky line to keep the window up
-   SDL_Event e; bool quit = false; while( quit == false ){ while( SDL_PollEvent( &e ) ){ if( e.type == SDL_QUIT ) quit = true; } }
-   SDLclose(window);
+   // keep the window up
+   SDL_Event e;
+   bool quit = false;
+   while(quit == false) {
+      while(SDL_PollEvent(&e)) {
+         if(e.type == SDL_QUIT) {
+            quit = true; 
+         }
+      }
+   }
+   SDLclose(&window, &renderer);
    return 0;
 }
