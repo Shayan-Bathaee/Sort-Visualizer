@@ -10,10 +10,7 @@ using namespace std;
 vector<string> sort_types = {"sort-1", "sort-2"};
 
 int main(int argc, char* argv[]) {
-   /**
-    * @brief Take user input
-    * 
-    */
+   /* Take user input */
    if (argc != 3) { // user needs help
       cout << "Usage: " << endl;
       cout << "\t./sort <array-len> <sort-type>" << endl;
@@ -63,10 +60,7 @@ int main(int argc, char* argv[]) {
       return 0;
    }
 
-   /**
-    * @brief Set up SDL window
-    * 
-    */
+   /* Set up SDL window */
    SDL_Window* window = NULL;
    SDL_Renderer* renderer = NULL;
    if (!SDLinit(&window, &renderer)) {
