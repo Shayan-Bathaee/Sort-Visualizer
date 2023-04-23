@@ -5,6 +5,8 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_render.h>
 
+using namespace std;
+
 #define SCREEN_WIDTH 1200
 #define SCREEN_HEIGHT 800
 
@@ -53,4 +55,56 @@ void SDLclose(SDL_Window** window, SDL_Renderer** renderer) {
    *renderer = NULL;
    *window = NULL;
    SDL_Quit();
+}
+
+
+void draw_array(SDL_Renderer** renderer, int* a, int size, int special_index) {
+   // clear screen
+   SDL_SetRenderDrawColor(*renderer, 0x00, 0x00, 0x00, 0xFF);
+   SDL_RenderClear(*renderer);
+   SDL_PumpEvents();
+
+   // determine bar sizes
+   int space, width;
+   switch (size) {
+      case 100:
+         space = 4;
+         width = 8;
+         break;
+      case 300: 
+         space = 1;
+         width = 3;
+         break;
+      case 600:
+         space = 1;
+         width = 1;
+         break;
+      case 1200: 
+         space = 0;
+         width = 1;
+         break;
+      default:
+         space = 1;
+         width = 1;
+   }
+
+   // draw array
+   SDL_SetRenderDrawColor(*renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+   int current_start_pos = 0;
+   for (int i = 0; i < size; i++) {
+      if (i == special_index) { // draw this bar in a different color
+         SDL_SetRenderDrawColor(*renderer, 0xFF, 0x00, 0x00, 0xFF);
+         SDL_Rect new_bar = {current_start_pos, SCREEN_HEIGHT - a[i], width, a[i]};
+         SDL_RenderFillRect(*renderer, &new_bar);
+         SDL_PumpEvents();
+         current_start_pos += (width + space);
+         SDL_SetRenderDrawColor(*renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+         continue;
+      }
+      SDL_Rect new_bar = {current_start_pos, SCREEN_HEIGHT - a[i], width, a[i]};
+      SDL_RenderFillRect(*renderer, &new_bar);
+      SDL_PumpEvents();
+      current_start_pos += (width + space);
+   }
+   SDL_RenderPresent(*renderer);
 }
