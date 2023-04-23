@@ -7,7 +7,6 @@
 
 #define SCREEN_WIDTH 1200
 #define SCREEN_HEIGHT 800
-#define MAX_ARRAY_LEN SCREEN_WIDTH / 4
 
 /**
  * @brief Initializes SDL window and renderer, sets background to black
