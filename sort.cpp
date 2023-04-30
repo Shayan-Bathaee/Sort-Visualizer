@@ -26,7 +26,7 @@ int main() {
    }
    // draw array and sort it
    draw_array(&renderer, a, ARRAY_SIZE, -1);
-   bool sorted = bubble_sort(&renderer, a, ARRAY_SIZE);
+   bool sorted = insertion_sort(&renderer, a, ARRAY_SIZE);
    
    // user closed window
    if (!sorted) {
