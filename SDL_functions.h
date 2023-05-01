@@ -28,6 +28,7 @@ bool SDLinit(SDL_Window** window, SDL_Renderer** renderer) {
    *window = SDL_CreateWindow("Sort-Visualizer, by Shayan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
    if (*window == NULL) {
       cout << "Window could not be created. SDL Error: " << SDL_GetError() << endl;
+      return false;
    }
    // create renderer for the window
    *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED);
@@ -67,13 +68,33 @@ void draw_array(SDL_Renderer** renderer, int* a, int size, int special_index) {
    // determine bar sizes
    int space, width;
    switch (size) {
+      case 10:
+         space = 40;
+         width = 80;
+         break;
+      case 25:
+         space = 16;
+         width = 32;
+         break;
+      case 50:
+         space = 8;
+         width = 16;
+         break;
       case 100:
          space = 4;
          width = 8;
          break;
+      case 200:
+         space = 2;
+         width = 4;
+         break;
       case 300: 
          space = 1;
          width = 3;
+         break;
+      case 400:
+         space = 1;
+         width = 2;
          break;
       case 600:
          space = 1;

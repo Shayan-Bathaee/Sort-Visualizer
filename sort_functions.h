@@ -144,3 +144,4 @@ bool merge_sort(SDL_Renderer** renderer, int* a, int left_index, int right_index
     return 1;
 }
 
+
