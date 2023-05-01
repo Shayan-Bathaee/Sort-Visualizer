@@ -7,7 +7,7 @@
 #include <thread>
 #include "sort_functions.h"
 
-#define ARRAY_SIZE 100
+#define ARRAY_SIZE 600
 
 using namespace std;
 
@@ -26,8 +26,8 @@ int main() {
    }
    // draw array and sort it
    draw_array(&renderer, a, ARRAY_SIZE, -1);
-   bool sorted = insertion_sort(&renderer, a, ARRAY_SIZE);
-   // bool sorted = merge_sort(&renderer, a, 0, ARRAY_SIZE - 1, ARRAY_SIZE);
+   // bool sorted = insertion_sort(&renderer, a, ARRAY_SIZE);
+   bool sorted = merge_sort(&renderer, a, 0, ARRAY_SIZE - 1, ARRAY_SIZE);
    
    // user closed window
    if (!sorted) {

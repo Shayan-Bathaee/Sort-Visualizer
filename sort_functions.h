@@ -131,18 +131,16 @@ int merge(SDL_Renderer** renderer, int* a, int left_index, int middle_index, int
 }
 
 bool merge_sort(SDL_Renderer** renderer, int* a, int left_index, int right_index, int size) {
-    int result = 0;
     if (left_index < right_index) {
         int middle_index = left_index + (right_index - left_index) / 2;
 
-        merge_sort(renderer, a, left_index, middle_index, size);
-        merge_sort(renderer, a, middle_index + 1, right_index, size);
+        if (!merge_sort(renderer, a, left_index, middle_index, size)) return 0;
+        if (!merge_sort(renderer, a, middle_index + 1, right_index, size)) return 0;
 
-        result = merge(renderer, a, left_index, middle_index, right_index, size);
-    }
-    if (result == 0) {
-        return result;
+        if (!merge(renderer, a, left_index, middle_index, right_index, size)) return 0;
+
     }
     draw_array(renderer, a, size, -1); // draw sorted array in white only
     return 1;
 }
+
