@@ -27,6 +27,7 @@ int main() {
    // draw array and sort it
    draw_array(&renderer, a, ARRAY_SIZE, -1);
    bool sorted = insertion_sort(&renderer, a, ARRAY_SIZE);
+   // bool sorted = merge_sort(&renderer, a, 0, ARRAY_SIZE - 1, ARRAY_SIZE);
    
    // user closed window
    if (!sorted) {
