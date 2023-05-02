@@ -2,25 +2,29 @@
 #include "SDL_functions.h"
 using namespace std;
 
+void swap(int &a, int &b) {
+    int tmp = a;
+    a = b;
+    b = tmp;
+}
+
 bool bubble_sort(SDL_Renderer** renderer, int* a, int size) {
     SDL_Event e;
     for (int j = 1; j < size; j++) {
         for (int i = 0; i < size - 1; i++) {
             if (a[i] > a[i + 1]) {
-                int tmp = a[i];
-                a[i] = a[i + 1];
-                a[i + 1] = tmp;
+                swap(a[i], a[i + 1]);
                 draw_array(renderer, a, size, i + 1); // draw array with the moving element colored
             }
             if (SDL_PollEvent(&e)) { // check if user wants to close window
                 if (e.type == SDL_QUIT) {
-                    return 0;
+                    return false;
                 }
             }
         }
     }
     draw_array(renderer, a, size, -1); // draw sorted array in white only
-    return 1;
+    return true;
 }
 
 bool selection_sort(SDL_Renderer** renderer, int* a, int size) {
@@ -36,17 +40,14 @@ bool selection_sort(SDL_Renderer** renderer, int* a, int size) {
             }
             if (SDL_PollEvent(&e)) { // check if user wants to close window
                 if (e.type == SDL_QUIT) {
-                    return 0;
+                    return false;
                 }
             }
         }
-        // swap min and a[j]
-        int tmp = a[j];
-        a[j] = min;
-        a[min_index] = tmp;
+        swap(a[j], a[min_index]);
     }
     draw_array(renderer, a, size, -1); // draw sorted array in white only
-    return 1;
+    return true;
 }
  
 bool insertion_sort(SDL_Renderer** renderer, int* a, int size) {
@@ -55,9 +56,7 @@ bool insertion_sort(SDL_Renderer** renderer, int* a, int size) {
         int inserting = j;
         for (int i = inserting - 1; i >= 0; i--) { // check the elements before inserting
             if (a[i] > a[inserting]) { // if the element before inserting is greater, swap them
-                int tmp = a[inserting];
-                a[inserting] = a[i];
-                a[i] = tmp;
+                swap(a[i], a[inserting]);
                 inserting = i;
                 draw_array(renderer, a, size, inserting); // draw array with inserting colored
             }
@@ -66,16 +65,16 @@ bool insertion_sort(SDL_Renderer** renderer, int* a, int size) {
             }
             if (SDL_PollEvent(&e)) { // check if user wants to close window
                 if (e.type == SDL_QUIT) {
-                    return 0;
+                    return false;
                 }
             }
         }
     }
     draw_array(renderer, a, size, -1); // draw sorted array in white only
-    return 1;
+    return true;
 }
 
-int merge(SDL_Renderer** renderer, int* a, int left_index, int middle_index, int right_index, int size) {
+bool merge(SDL_Renderer** renderer, int* a, int left_index, int middle_index, int right_index, int size) {
     SDL_Event e;
 
     // create two arrays for the left and right
@@ -107,7 +106,7 @@ int merge(SDL_Renderer** renderer, int* a, int left_index, int middle_index, int
         draw_array(renderer, a, size, merged_curr); // draw array with merged_curr colored
         if (SDL_PollEvent(&e)) { // check if user wants to close window
             if (e.type == SDL_QUIT) {
-                return 0;
+                return false;
             }
         }
         merged_curr++;
@@ -126,22 +125,50 @@ int merge(SDL_Renderer** renderer, int* a, int left_index, int middle_index, int
         right_curr++;
         merged_curr++;
     }
-    return 1;
-
+    
+    return true;
 }
 
 bool merge_sort(SDL_Renderer** renderer, int* a, int left_index, int right_index, int size) {
     if (left_index < right_index) {
         int middle_index = left_index + (right_index - left_index) / 2;
 
-        if (!merge_sort(renderer, a, left_index, middle_index, size)) return 0;
-        if (!merge_sort(renderer, a, middle_index + 1, right_index, size)) return 0;
+        if (!merge_sort(renderer, a, left_index, middle_index, size)) return false;
+        if (!merge_sort(renderer, a, middle_index + 1, right_index, size)) return false;
 
-        if (!merge(renderer, a, left_index, middle_index, right_index, size)) return 0;
+        if (!merge(renderer, a, left_index, middle_index, right_index, size)) return false;
 
     }
     draw_array(renderer, a, size, -1); // draw sorted array in white only
-    return 1;
+    return true;
+}
+
+int partition(SDL_Renderer** renderer, int* a, int left_index, int right_index, int size, int &return_pivot_index) {
+    // set rightmost index as pivot
+    int pivot_index = right_index;
+    int store_index = left_index;
+    for (int i = left_index; i < right_index; i++) {
+        if (a[i] <= a[pivot_index]) {
+            swap(a[i], a[store_index]);
+            store_index++;
+            draw_array(renderer, a, size, store_index); // draw array with store_index colored
+        }
+    }
+    swap(a[right_index], a[store_index]);
+    draw_array(renderer, a, size, store_index); // draw array with store_index colored
+    return_pivot_index = store_index;
+    return true;
+}
+
+bool quick_sort(SDL_Renderer** renderer, int* a, int left_index, int right_index, int size) {
+    if (left_index < right_index) {
+        int pivot_index;
+        partition(renderer, a, left_index, right_index, size, pivot_index);
+        quick_sort(renderer, a, left_index, pivot_index - 1, size);
+        quick_sort(renderer, a, pivot_index + 1, right_index, size);
+    }
+    draw_array(renderer, a, size, -1);
+    return true;
 }
 
 

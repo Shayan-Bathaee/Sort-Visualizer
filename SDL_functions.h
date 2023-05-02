@@ -58,7 +58,6 @@ void SDLclose(SDL_Window** window, SDL_Renderer** renderer) {
    SDL_Quit();
 }
 
-
 void draw_array(SDL_Renderer** renderer, int* a, int size, int special_index) {
    // clear screen
    SDL_SetRenderDrawColor(*renderer, 0x00, 0x00, 0x00, 0xFF);

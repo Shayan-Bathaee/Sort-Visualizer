@@ -51,15 +51,18 @@ int main(int argc, char* argv[]) {
    draw_array(&renderer, a, size, -1);
 
    // sort the array and display animate its progress
-   bool sorted = 0;
+   bool sorted = false;
    if (algorithm == "bubble") sorted = bubble_sort(&renderer, a, size);
    else if (algorithm == "selection") sorted = selection_sort(&renderer, a, size);
    else if (algorithm == "insertion") sorted = insertion_sort(&renderer, a, size);
    else if (algorithm == "merge") sorted = merge_sort(&renderer, a, 0, size - 1, size);
+   else if (algorithm == "quick") sorted = quick_sort(&renderer, a, 0, size - 1, size);
    else {
       cout << "ERROR: Invalid algorithm, bubble sort will be used." << endl;
       sorted = bubble_sort(&renderer, a, size);
    }
+   draw_array(&renderer, a, size, -1);
+   
    
    // user closed window
    if (!sorted) {
