@@ -144,6 +144,8 @@ bool merge_sort(SDL_Renderer** renderer, int* a, int left_index, int right_index
 }
 
 int partition(SDL_Renderer** renderer, int* a, int left_index, int right_index, int size, int &return_pivot_index) {
+    SDL_Event e;
+
     // set rightmost index as pivot
     int pivot_index = right_index;
     int store_index = left_index;
@@ -152,6 +154,11 @@ int partition(SDL_Renderer** renderer, int* a, int left_index, int right_index, 
             swap(a[i], a[store_index]);
             store_index++;
             draw_array(renderer, a, size, store_index); // draw array with store_index colored
+            if (SDL_PollEvent(&e)) { // check if user wants to close window
+                if (e.type == SDL_QUIT) {
+                    return false;
+                }
+            }
         }
     }
     swap(a[right_index], a[store_index]);
@@ -162,12 +169,66 @@ int partition(SDL_Renderer** renderer, int* a, int left_index, int right_index, 
 
 bool quick_sort(SDL_Renderer** renderer, int* a, int left_index, int right_index, int size) {
     if (left_index < right_index) {
+        // choose pivot, partition the array, and call quicksort on each partition
         int pivot_index;
-        partition(renderer, a, left_index, right_index, size, pivot_index);
-        quick_sort(renderer, a, left_index, pivot_index - 1, size);
-        quick_sort(renderer, a, pivot_index + 1, right_index, size);
+        if (!partition(renderer, a, left_index, right_index, size, pivot_index)) return false;
+        if (!quick_sort(renderer, a, left_index, pivot_index - 1, size)) return false;
+        if (!quick_sort(renderer, a, pivot_index + 1, right_index, size)) return false;
     }
-    draw_array(renderer, a, size, -1);
+    draw_array(renderer, a, size, -1); // draw sorted array in white only
+    return true;
+}
+
+bool counting_sort(SDL_Renderer** renderer, int* a, int size) {
+    SDL_Event e;
+
+    // copy a into output for animation
+    int* output = new int[size];
+    memcpy(output, a, sizeof(int) * size);
+    
+    // find max
+    int max = a[0];
+    for (int i = 1; i < size; i++) {
+        if (a[i] > max) {
+            max = a[i];
+        }
+    }
+    max = max + 1;
+
+    // create count array to store the count of each element
+    int count[max] = {0};
+    for (int i = 0; i < size; i++) {
+        count[a[i]]++;
+        draw_array(renderer, a, size, i); // draw array with index colored
+        if (SDL_PollEvent(&e)) { // check if user wants to close window
+            if (e.type == SDL_QUIT) {
+                return false;
+            }
+        }
+    }
+
+    // take cumulative sum
+    for (int i = 1; i <= max; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // do the sorting magic
+    for (int i = size - 1; i >= 0; i--) {
+        output[count[a[i]] - 1] = a[i];
+        draw_array(renderer, output, size, count[a[i] - 1]); // draw output array with changing index colored
+        if (SDL_PollEvent(&e)) { // check if user wants to close window
+            if (e.type == SDL_QUIT) {
+                return false;
+            }
+        }
+        count[a[i]]--;
+    }
+
+    // copy output into a
+    for (int i = 0; i < size; i++) {
+        a[i] = output[i];
+    }
+    draw_array(renderer, a, size, -1); // draw sorted array in white only
     return true;
 }
 
