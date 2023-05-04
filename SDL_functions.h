@@ -58,7 +58,7 @@ void SDLclose(SDL_Window** window, SDL_Renderer** renderer) {
    SDL_Quit();
 }
 
-void draw_array(SDL_Renderer** renderer, int* a, int size, int special_index) {
+bool draw_array(SDL_Renderer** renderer, int* a, int size, int special_index) {
    // clear screen
    SDL_SetRenderDrawColor(*renderer, 0x00, 0x00, 0x00, 0xFF);
    SDL_RenderClear(*renderer);
@@ -126,5 +126,16 @@ void draw_array(SDL_Renderer** renderer, int* a, int size, int special_index) {
       SDL_PumpEvents();
       current_start_pos += (width + space);
    }
+
+   // check if user wants to close window
+   SDL_Event e;
+   if (SDL_PollEvent(&e)) { // check if user wants to close window
+      if (e.type == SDL_QUIT) {
+         return false;
+      }
+   }
+
+   // render and return true
    SDL_RenderPresent(*renderer);
+   return true;
 }

@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
       for (int i = 0; i < argc; i++) {
          if ((string)argv[i] == "-h") { // help flag
             cout << "Usage:\n\t./sort -a <algorithm> -s <size>" << endl;
-            cout << "Algorithms:\n\tbubble\n\tselection\n\tinsertion\n\tmerge\n\tquick\n\tcounting" << endl;
+            cout << "Algorithms:\n\tbubble\n\tselection\n\tinsertion\n\tmerge\n\tquick\n\tcounting\n\tshell\n\tbogo" << endl;
             cout << "Sizes:\n\t10, 25, 50, 100, 200, 300, 600, 1200" << endl;
             cout << "Defaults:\n\talgorithm: bubble\n\tsize: 200" << endl;
             return 0;
@@ -58,6 +58,8 @@ int main(int argc, char* argv[]) {
    else if (algorithm == "merge") sorted = merge_sort(&renderer, a, 0, size - 1, size);
    else if (algorithm == "quick") sorted = quick_sort(&renderer, a, 0, size - 1, size);
    else if (algorithm == "counting") sorted = counting_sort(&renderer, a, size);
+   else if (algorithm == "shell") sorted = shell_sort(&renderer, a, size);
+   else if (algorithm == "bogo") sorted = bogo_sort(&renderer, a, size);
    else {
       cout << "ERROR: Invalid algorithm, bubble sort will be used." << endl;
       sorted = bubble_sort(&renderer, a, size);

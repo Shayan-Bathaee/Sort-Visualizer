@@ -9,17 +9,11 @@ void swap(int &a, int &b) {
 }
 
 bool bubble_sort(SDL_Renderer** renderer, int* a, int size) {
-    SDL_Event e;
     for (int j = 1; j < size; j++) {
         for (int i = 0; i < size - 1; i++) {
             if (a[i] > a[i + 1]) {
                 swap(a[i], a[i + 1]);
-                draw_array(renderer, a, size, i + 1); // draw array with the moving element colored
-            }
-            if (SDL_PollEvent(&e)) { // check if user wants to close window
-                if (e.type == SDL_QUIT) {
-                    return false;
-                }
+                if (!draw_array(renderer, a, size, i + 1)) return false; // draw array with the moving element colored
             }
         }
     }
@@ -28,7 +22,6 @@ bool bubble_sort(SDL_Renderer** renderer, int* a, int size) {
 }
 
 bool selection_sort(SDL_Renderer** renderer, int* a, int size) {
-    SDL_Event e;
     for (int j = 0; j < size - 1; j++) {
         int min = a[j];
         int min_index;
@@ -36,12 +29,7 @@ bool selection_sort(SDL_Renderer** renderer, int* a, int size) {
             if (a[i] < min) {
                 min = a[i];
                 min_index = i;
-                draw_array(renderer, a, size, min_index); // draw array with the minimum element colored
-            }
-            if (SDL_PollEvent(&e)) { // check if user wants to close window
-                if (e.type == SDL_QUIT) {
-                    return false;
-                }
+                if (!draw_array(renderer, a, size, min_index)) return false; // draw array with the minimum element colored
             }
         }
         swap(a[j], a[min_index]);
@@ -51,22 +39,16 @@ bool selection_sort(SDL_Renderer** renderer, int* a, int size) {
 }
  
 bool insertion_sort(SDL_Renderer** renderer, int* a, int size) {
-    SDL_Event e;
     for (int j = 1; j < size; j++) {
         int inserting = j;
         for (int i = inserting - 1; i >= 0; i--) { // check the elements before inserting
             if (a[i] > a[inserting]) { // if the element before inserting is greater, swap them
                 swap(a[i], a[inserting]);
                 inserting = i;
-                draw_array(renderer, a, size, inserting); // draw array with inserting colored
+                if (!draw_array(renderer, a, size, inserting)) return false; // draw array with inserting colored
             }
             else { // inserting is in the correct spot
                 break;
-            }
-            if (SDL_PollEvent(&e)) { // check if user wants to close window
-                if (e.type == SDL_QUIT) {
-                    return false;
-                }
             }
         }
     }
@@ -75,8 +57,6 @@ bool insertion_sort(SDL_Renderer** renderer, int* a, int size) {
 }
 
 bool merge(SDL_Renderer** renderer, int* a, int left_index, int middle_index, int right_index, int size) {
-    SDL_Event e;
-
     // create two arrays for the left and right
     int left_size = middle_index - left_index + 1;
     int right_size = right_index - middle_index;
@@ -103,12 +83,7 @@ bool merge(SDL_Renderer** renderer, int* a, int left_index, int middle_index, in
             a[merged_curr] = right_array[right_curr];
             right_curr++;
         }
-        draw_array(renderer, a, size, merged_curr); // draw array with merged_curr colored
-        if (SDL_PollEvent(&e)) { // check if user wants to close window
-            if (e.type == SDL_QUIT) {
-                return false;
-            }
-        }
+        if (!draw_array(renderer, a, size, merged_curr)) return false; // draw array with merged_curr colored
         merged_curr++;
     }
 
@@ -144,8 +119,6 @@ bool merge_sort(SDL_Renderer** renderer, int* a, int left_index, int right_index
 }
 
 int partition(SDL_Renderer** renderer, int* a, int left_index, int right_index, int size, int &return_pivot_index) {
-    SDL_Event e;
-
     // set rightmost index as pivot
     int pivot_index = right_index;
     int store_index = left_index;
@@ -153,16 +126,11 @@ int partition(SDL_Renderer** renderer, int* a, int left_index, int right_index, 
         if (a[i] <= a[pivot_index]) {
             swap(a[i], a[store_index]);
             store_index++;
-            draw_array(renderer, a, size, store_index); // draw array with store_index colored
-            if (SDL_PollEvent(&e)) { // check if user wants to close window
-                if (e.type == SDL_QUIT) {
-                    return false;
-                }
-            }
+            if (!draw_array(renderer, a, size, store_index)) return false; // draw array with store_index colored
         }
     }
     swap(a[right_index], a[store_index]);
-    draw_array(renderer, a, size, store_index); // draw array with store_index colored
+    if (!draw_array(renderer, a, size, store_index)) return false; // draw array with store_index colored
     return_pivot_index = store_index;
     return true;
 }
@@ -180,8 +148,6 @@ bool quick_sort(SDL_Renderer** renderer, int* a, int left_index, int right_index
 }
 
 bool counting_sort(SDL_Renderer** renderer, int* a, int size) {
-    SDL_Event e;
-
     // copy a into output for animation
     int* output = new int[size];
     memcpy(output, a, sizeof(int) * size);
@@ -199,12 +165,7 @@ bool counting_sort(SDL_Renderer** renderer, int* a, int size) {
     int count[max] = {0};
     for (int i = 0; i < size; i++) {
         count[a[i]]++;
-        draw_array(renderer, a, size, i); // draw array with index colored
-        if (SDL_PollEvent(&e)) { // check if user wants to close window
-            if (e.type == SDL_QUIT) {
-                return false;
-            }
-        }
+        if (!draw_array(renderer, a, size, i)) return false; // draw array with index colored
     }
 
     // take cumulative sum
@@ -215,12 +176,7 @@ bool counting_sort(SDL_Renderer** renderer, int* a, int size) {
     // do the sorting magic
     for (int i = size - 1; i >= 0; i--) {
         output[count[a[i]] - 1] = a[i];
-        draw_array(renderer, output, size, count[a[i] - 1]); // draw output array with changing index colored
-        if (SDL_PollEvent(&e)) { // check if user wants to close window
-            if (e.type == SDL_QUIT) {
-                return false;
-            }
-        }
+        if (!draw_array(renderer, output, size, count[a[i] - 1])) return false; // draw output array with changing index colored
         count[a[i]]--;
     }
 
@@ -232,4 +188,41 @@ bool counting_sort(SDL_Renderer** renderer, int* a, int size) {
     return true;
 }
 
+bool shell_sort(SDL_Renderer** renderer, int* a, int size) {
+    for (int interval = size / 2; interval > 0; interval = interval / 2) {
+        for (int i = interval; i < size; i++) {
+            int tmp = a[i];
+            int j;
+            for (j = i; (j >= interval) && (a[j - interval] > tmp); j = j - interval) {
+                a[j] = a[j - interval];
+                if (!draw_array(renderer, a, size, j)) return false; // draw output array with the changing index colored
+            }
+            a[j] = tmp;
+            if (!draw_array(renderer, a, size, j)) return false; // draw output array with the changing index colored
+        }
+    }
+    draw_array(renderer, a, size, -1); // draw sorted array in white only
+    return true;
+}
+
+bool bogo_sort(SDL_Renderer** renderer, int* a, int size) {
+    bool sorted = false;
+    while (!sorted) {
+        // generate permutation of the array (Fisher-Yates shuffling)
+        for (int i = size - 1; i >= 0; i--) {
+            int j = rand() % (i + 1);
+            swap(a[i], a[j]);
+        }
+        if (!draw_array(renderer, a, size, -1)) return false; // draw array in white only
+        // check if permutation is sorted
+        sorted = true;
+        for (int i = 0; i < size - 1; i++) {
+            if (a[i] > a[i + 1]) {
+                sorted = false;
+                break;
+            }
+        }
+    }
+    return true;
+}
 
