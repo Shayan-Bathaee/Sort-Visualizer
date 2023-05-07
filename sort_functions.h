@@ -8,55 +8,55 @@ void swap(int &a, int &b) {
     b = tmp;
 }
 
-bool bubble_sort(SDL_Renderer** renderer, int* a, int size) {
-    for (int j = 1; j < size; j++) {
-        for (int i = 0; i < size - 1; i++) {
+bool bubble_sort(animation_data &animation_data_obj, int* a) {
+    for (int j = 1; j < animation_data_obj.size; j++) {
+        for (int i = 0; i < animation_data_obj.size - 1; i++) {
             if (a[i] > a[i + 1]) {
                 swap(a[i], a[i + 1]);
-                if (!draw_array(renderer, a, size, i + 1)) return false; // draw array with the moving element colored
+                if (!draw_array(animation_data_obj, a, i + 1)) return false; // draw array with the moving element colored
             }
         }
     }
-    draw_array(renderer, a, size, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
     return true;
 }
 
-bool selection_sort(SDL_Renderer** renderer, int* a, int size) {
-    for (int j = 0; j < size - 1; j++) {
+bool selection_sort(animation_data &animation_data_obj, int* a) {
+    for (int j = 0; j < animation_data_obj.size - 1; j++) {
         int min = a[j];
         int min_index;
-        for (int i = j + 1; i < size; i++) {
+        for (int i = j + 1; i < animation_data_obj.size; i++) {
             if (a[i] < min) {
                 min = a[i];
                 min_index = i;
-                if (!draw_array(renderer, a, size, min_index)) return false; // draw array with the minimum element colored
+                if (!draw_array(animation_data_obj, a, min_index)) return false; // draw array with the minimum element colored
             }
         }
         swap(a[j], a[min_index]);
     }
-    draw_array(renderer, a, size, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
     return true;
 }
  
-bool insertion_sort(SDL_Renderer** renderer, int* a, int size) {
-    for (int j = 1; j < size; j++) {
+bool insertion_sort(animation_data &animation_data_obj, int* a) {
+    for (int j = 1; j < animation_data_obj.size; j++) {
         int inserting = j;
         for (int i = inserting - 1; i >= 0; i--) { // check the elements before inserting
             if (a[i] > a[inserting]) { // if the element before inserting is greater, swap them
                 swap(a[i], a[inserting]);
                 inserting = i;
-                if (!draw_array(renderer, a, size, inserting)) return false; // draw array with inserting colored
+                if (!draw_array(animation_data_obj, a, inserting)) return false; // draw array with inserting colored
             }
             else { // inserting is in the correct spot
                 break;
             }
         }
     }
-    draw_array(renderer, a, size, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
     return true;
 }
 
-bool merge(SDL_Renderer** renderer, int* a, int left_index, int middle_index, int right_index, int size) {
+bool merge(animation_data &animation_data_obj, int* a, int left_index, int middle_index, int right_index) {
     // create two arrays for the left and right
     int left_size = middle_index - left_index + 1;
     int right_size = right_index - middle_index;
@@ -83,7 +83,7 @@ bool merge(SDL_Renderer** renderer, int* a, int left_index, int middle_index, in
             a[merged_curr] = right_array[right_curr];
             right_curr++;
         }
-        if (!draw_array(renderer, a, size, merged_curr)) return false; // draw array with merged_curr colored
+        if (!draw_array(animation_data_obj, a, merged_curr)) return false; // draw array with merged_curr colored
         merged_curr++;
     }
 
@@ -104,21 +104,21 @@ bool merge(SDL_Renderer** renderer, int* a, int left_index, int middle_index, in
     return true;
 }
 
-bool merge_sort(SDL_Renderer** renderer, int* a, int left_index, int right_index, int size) {
+bool merge_sort(animation_data &animation_data_obj, int* a, int left_index, int right_index) {
     if (left_index < right_index) {
         int middle_index = left_index + (right_index - left_index) / 2;
 
-        if (!merge_sort(renderer, a, left_index, middle_index, size)) return false;
-        if (!merge_sort(renderer, a, middle_index + 1, right_index, size)) return false;
+        if (!merge_sort(animation_data_obj, a, left_index, middle_index)) return false;
+        if (!merge_sort(animation_data_obj, a, middle_index + 1, right_index)) return false;
 
-        if (!merge(renderer, a, left_index, middle_index, right_index, size)) return false;
+        if (!merge(animation_data_obj, a, left_index, middle_index, right_index)) return false;
 
     }
-    draw_array(renderer, a, size, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
     return true;
 }
 
-int partition(SDL_Renderer** renderer, int* a, int left_index, int right_index, int size, int &return_pivot_index) {
+int partition(animation_data &animation_data_obj, int* a, int left_index, int right_index, int &return_pivot_index) {
     // set rightmost index as pivot
     int pivot_index = right_index;
     int store_index = left_index;
@@ -126,35 +126,35 @@ int partition(SDL_Renderer** renderer, int* a, int left_index, int right_index, 
         if (a[i] <= a[pivot_index]) {
             swap(a[i], a[store_index]);
             store_index++;
-            if (!draw_array(renderer, a, size, store_index)) return false; // draw array with store_index colored
+            if (!draw_array(animation_data_obj, a, store_index)) return false; // draw array with store_index colored
         }
     }
     swap(a[right_index], a[store_index]);
-    if (!draw_array(renderer, a, size, store_index)) return false; // draw array with store_index colored
+    if (!draw_array(animation_data_obj, a, store_index)) return false; // draw array with store_index colored
     return_pivot_index = store_index;
     return true;
 }
 
-bool quick_sort(SDL_Renderer** renderer, int* a, int left_index, int right_index, int size) {
+bool quick_sort(animation_data &animation_data_obj, int* a, int left_index, int right_index) {
     if (left_index < right_index) {
         // choose pivot, partition the array, and call quicksort on each partition
         int pivot_index;
-        if (!partition(renderer, a, left_index, right_index, size, pivot_index)) return false;
-        if (!quick_sort(renderer, a, left_index, pivot_index - 1, size)) return false;
-        if (!quick_sort(renderer, a, pivot_index + 1, right_index, size)) return false;
+        if (!partition(animation_data_obj, a, left_index, right_index, pivot_index)) return false;
+        if (!quick_sort(animation_data_obj, a, left_index, pivot_index - 1)) return false;
+        if (!quick_sort(animation_data_obj, a, pivot_index + 1, right_index)) return false;
     }
-    draw_array(renderer, a, size, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
     return true;
 }
 
-bool counting_sort(SDL_Renderer** renderer, int* a, int size) {
+bool counting_sort(animation_data &animation_data_obj, int* a) {
     // copy a into output for animation
-    int* output = new int[size];
-    memcpy(output, a, sizeof(int) * size);
+    int* output = new int[animation_data_obj.size];
+    memcpy(output, a, sizeof(int) * animation_data_obj.size);
     
     // find max
     int max = a[0];
-    for (int i = 1; i < size; i++) {
+    for (int i = 1; i < animation_data_obj.size; i++) {
         if (a[i] > max) {
             max = a[i];
         }
@@ -163,9 +163,9 @@ bool counting_sort(SDL_Renderer** renderer, int* a, int size) {
 
     // create count array to store the count of each element
     int count[max] = {0};
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < animation_data_obj.size; i++) {
         count[a[i]]++;
-        if (!draw_array(renderer, a, size, i)) return false; // draw array with index colored
+        if (!draw_array(animation_data_obj, a, i)) return false; // draw array with index colored
     }
 
     // take cumulative sum
@@ -174,49 +174,49 @@ bool counting_sort(SDL_Renderer** renderer, int* a, int size) {
     }
 
     // do the sorting magic
-    for (int i = size - 1; i >= 0; i--) {
+    for (int i = animation_data_obj.size - 1; i >= 0; i--) {
         output[count[a[i]] - 1] = a[i];
-        if (!draw_array(renderer, output, size, count[a[i] - 1])) return false; // draw output array with changing index colored
+        if (!draw_array(animation_data_obj, output, count[a[i] - 1])) return false; // draw output array with changing index colored
         count[a[i]]--;
     }
 
     // copy output into a
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < animation_data_obj.size; i++) {
         a[i] = output[i];
     }
-    draw_array(renderer, a, size, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
     return true;
 }
 
-bool shell_sort(SDL_Renderer** renderer, int* a, int size) {
-    for (int interval = size / 2; interval > 0; interval = interval / 2) {
-        for (int i = interval; i < size; i++) {
+bool shell_sort(animation_data &animation_data_obj, int* a) {
+    for (int interval = animation_data_obj.size / 2; interval > 0; interval = interval / 2) {
+        for (int i = interval; i < animation_data_obj.size; i++) {
             int tmp = a[i];
             int j;
             for (j = i; (j >= interval) && (a[j - interval] > tmp); j = j - interval) {
                 a[j] = a[j - interval];
-                if (!draw_array(renderer, a, size, j)) return false; // draw output array with the changing index colored
+                if (!draw_array(animation_data_obj, a, j)) return false; // draw output array with the changing index colored
             }
             a[j] = tmp;
-            if (!draw_array(renderer, a, size, j)) return false; // draw output array with the changing index colored
+            if (!draw_array(animation_data_obj, a, j)) return false; // draw output array with the changing index colored
         }
     }
-    draw_array(renderer, a, size, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
     return true;
 }
 
-bool bogo_sort(SDL_Renderer** renderer, int* a, int size) {
+bool bogo_sort(animation_data &animation_data_obj, int* a) {
     bool sorted = false;
     while (!sorted) {
         // generate permutation of the array (Fisher-Yates shuffling)
-        for (int i = size - 1; i >= 0; i--) {
+        for (int i = animation_data_obj.size - 1; i >= 0; i--) {
             int j = rand() % (i + 1);
             swap(a[i], a[j]);
         }
-        if (!draw_array(renderer, a, size, -1)) return false; // draw array in white only
+        if (!draw_array(animation_data_obj, a, -1)) return false; // draw array in white only
         // check if permutation is sorted
         sorted = true;
-        for (int i = 0; i < size - 1; i++) {
+        for (int i = 0; i < animation_data_obj.size - 1; i++) {
             if (a[i] > a[i + 1]) {
                 sorted = false;
                 break;

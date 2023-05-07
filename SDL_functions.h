@@ -4,8 +4,17 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_render.h>
+#include <unistd.h>
 
 using namespace std;
+
+class animation_data {
+   public:
+      SDL_Window* window = NULL;
+      SDL_Renderer* renderer = NULL;
+      int delay = 0;
+      int size = 200;
+};
 
 #define SCREEN_WIDTH 1200
 #define SCREEN_HEIGHT 800
@@ -18,28 +27,28 @@ using namespace std;
  * @return true if SDL was initialized correctly
  * @return false if SDL initialization failed
  */
-bool SDLinit(SDL_Window** window, SDL_Renderer** renderer) {
+bool SDLinit(animation_data &animation_data_obj) {
    // initialize sdl
    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
       cout << "SDL could not be initialized. SDL Error: " << SDL_GetError() << endl;
       return false;
    }
    // create window
-   *window = SDL_CreateWindow("Sort-Visualizer, by Shayan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-   if (*window == NULL) {
+   animation_data_obj.window = SDL_CreateWindow("Sort-Visualizer, by Shayan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+   if (animation_data_obj.window == NULL) {
       cout << "Window could not be created. SDL Error: " << SDL_GetError() << endl;
       return false;
    }
    // create renderer for the window
-   *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED);
-   if (*renderer == NULL) {
+   animation_data_obj.renderer = SDL_CreateRenderer(animation_data_obj.window, -1, SDL_RENDERER_ACCELERATED);
+   if (animation_data_obj.renderer == NULL) {
       cout << "Renderer could not be created. SDL Error: " << SDL_GetError() << endl;
       return false;
    }
    // fill background black
-   SDL_SetRenderDrawColor(*renderer, 0x00, 0x00, 0x00, 0xFF);
-   SDL_RenderClear(*renderer);
-   SDL_RenderPresent(*renderer);
+   SDL_SetRenderDrawColor(animation_data_obj.renderer, 0x00, 0x00, 0x00, 0xFF);
+   SDL_RenderClear(animation_data_obj.renderer);
+   SDL_RenderPresent(animation_data_obj.renderer);
 
    return true;
 }
@@ -50,23 +59,23 @@ bool SDLinit(SDL_Window** window, SDL_Renderer** renderer) {
  * @param window 
  * @param renderer 
  */
-void SDLclose(SDL_Window** window, SDL_Renderer** renderer) {
-   SDL_DestroyRenderer(*renderer);
-   SDL_DestroyWindow(*window);
-   *renderer = NULL;
-   *window = NULL;
+void SDLclose(animation_data &animation_data_obj) {
+   SDL_DestroyRenderer(animation_data_obj.renderer);
+   SDL_DestroyWindow(animation_data_obj.window);
+   animation_data_obj.renderer = NULL;
+   animation_data_obj.window = NULL;
    SDL_Quit();
 }
 
-bool draw_array(SDL_Renderer** renderer, int* a, int size, int special_index) {
+bool draw_array(animation_data &animation_data_obj, int* a, int special_index) {
    // clear screen
-   SDL_SetRenderDrawColor(*renderer, 0x00, 0x00, 0x00, 0xFF);
-   SDL_RenderClear(*renderer);
+   SDL_SetRenderDrawColor(animation_data_obj.renderer, 0x00, 0x00, 0x00, 0xFF);
+   SDL_RenderClear(animation_data_obj.renderer);
    SDL_PumpEvents();
 
    // determine bar sizes
    int space, width;
-   switch (size) {
+   switch (animation_data_obj.size) {
       case 10:
          space = 40;
          width = 80;
@@ -109,20 +118,20 @@ bool draw_array(SDL_Renderer** renderer, int* a, int size, int special_index) {
    }
 
    // draw array
-   SDL_SetRenderDrawColor(*renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+   SDL_SetRenderDrawColor(animation_data_obj.renderer, 0xFF, 0xFF, 0xFF, 0xFF);
    int current_start_pos = 0;
-   for (int i = 0; i < size; i++) {
+   for (int i = 0; i < animation_data_obj.size; i++) {
       if (i == special_index) { // draw this bar in a different color
-         SDL_SetRenderDrawColor(*renderer, 0xFF, 0x00, 0x00, 0xFF);
+         SDL_SetRenderDrawColor(animation_data_obj.renderer, 0xFF, 0x00, 0x00, 0xFF);
          SDL_Rect new_bar = {current_start_pos, SCREEN_HEIGHT - a[i], width, a[i]};
-         SDL_RenderFillRect(*renderer, &new_bar);
+         SDL_RenderFillRect(animation_data_obj.renderer, &new_bar);
          SDL_PumpEvents();
          current_start_pos += (width + space);
-         SDL_SetRenderDrawColor(*renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+         SDL_SetRenderDrawColor(animation_data_obj.renderer, 0xFF, 0xFF, 0xFF, 0xFF);
          continue;
       }
       SDL_Rect new_bar = {current_start_pos, SCREEN_HEIGHT - a[i], width, a[i]};
-      SDL_RenderFillRect(*renderer, &new_bar);
+      SDL_RenderFillRect(animation_data_obj.renderer, &new_bar);
       SDL_PumpEvents();
       current_start_pos += (width + space);
    }
@@ -135,7 +144,9 @@ bool draw_array(SDL_Renderer** renderer, int* a, int size, int special_index) {
       }
    }
 
-   // render and return true
-   SDL_RenderPresent(*renderer);
+   // render, delay, and return true
+   SDL_RenderPresent(animation_data_obj.renderer);
+
+   // thread to delay, thread to check event
    return true;
 }
