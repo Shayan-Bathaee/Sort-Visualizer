@@ -14,6 +14,7 @@ class animation_data {
       SDL_Renderer* renderer = NULL;
       int delay = 0;
       int size = 200;
+      bool open = true;
 };
 
 #define SCREEN_WIDTH 1200
@@ -27,7 +28,7 @@ class animation_data {
  * @return true if SDL was initialized correctly
  * @return false if SDL initialization failed
  */
-bool SDLinit(animation_data &animation_data_obj) {
+bool SDL_init(animation_data &animation_data_obj) {
    // initialize sdl
    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
       cout << "SDL could not be initialized. SDL Error: " << SDL_GetError() << endl;
@@ -59,7 +60,7 @@ bool SDLinit(animation_data &animation_data_obj) {
  * @param window 
  * @param renderer 
  */
-void SDLclose(animation_data &animation_data_obj) {
+void SDL_close(animation_data &animation_data_obj) {
    SDL_DestroyRenderer(animation_data_obj.renderer);
    SDL_DestroyWindow(animation_data_obj.window);
    animation_data_obj.renderer = NULL;
@@ -68,6 +69,11 @@ void SDLclose(animation_data &animation_data_obj) {
 }
 
 bool draw_array(animation_data &animation_data_obj, int* a, int special_index) {
+   // check if window is open
+   if (animation_data_obj.open == false) {
+      return false;
+   }
+   
    // clear screen
    SDL_SetRenderDrawColor(animation_data_obj.renderer, 0x00, 0x00, 0x00, 0xFF);
    SDL_RenderClear(animation_data_obj.renderer);
@@ -136,17 +142,12 @@ bool draw_array(animation_data &animation_data_obj, int* a, int special_index) {
       current_start_pos += (width + space);
    }
 
-   // check if user wants to close window
-   SDL_Event e;
-   if (SDL_PollEvent(&e)) { // check if user wants to close window
-      if (e.type == SDL_QUIT) {
-         return false;
-      }
+   // delay
+   if (animation_data_obj.delay) {
+      usleep(animation_data_obj.delay);
    }
 
-   // render, delay, and return true
+   // render and return true
    SDL_RenderPresent(animation_data_obj.renderer);
-
-   // thread to delay, thread to check event
    return true;
 }

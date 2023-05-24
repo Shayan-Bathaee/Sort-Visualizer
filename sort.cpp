@@ -9,6 +9,15 @@
 
 using namespace std;
 
+void close_program_check(animation_data &animation_data_obj) {
+   SDL_Event e;
+   SDL_PollEvent(&e);
+   while (e.type != SDL_QUIT) {
+      SDL_PollEvent(&e);
+   }
+   animation_data_obj.open = false;
+}
+
 int main(int argc, char* argv[]) {
    // set default parameters
    string algorithm = "bubble";
@@ -49,12 +58,12 @@ int main(int argc, char* argv[]) {
    }
 
    // Set up the SDL window
-   if (!SDLinit(animation_data_obj)) {
+   if (!SDL_init(animation_data_obj)) {
       return 0;
    }
 
-
-   // Create a thread to run close program check!!!!!!!! -------------------------------------------------------------------------------------------------------------
+   // spawn thread to keep window up
+   thread window_thread(close_program_check, ref(animation_data_obj));
    
    // build hardcoded array and draw it
    int a[animation_data_obj.size];
@@ -64,40 +73,22 @@ int main(int argc, char* argv[]) {
    draw_array(animation_data_obj, a, -1);
 
    // sort the array and animate its progress
-   bool sorted = false;
-   if (algorithm == "bubble") sorted = bubble_sort(animation_data_obj, a);
-   else if (algorithm == "selection") sorted = selection_sort(animation_data_obj, a);
-   else if (algorithm == "insertion") sorted = insertion_sort(animation_data_obj, a);
-   else if (algorithm == "merge") sorted = merge_sort(animation_data_obj, a, 0, animation_data_obj.size - 1);
-   else if (algorithm == "quick") sorted = quick_sort(animation_data_obj, a, 0, animation_data_obj.size - 1);
-   else if (algorithm == "counting") sorted = counting_sort(animation_data_obj, a);
-   else if (algorithm == "shell") sorted = shell_sort(animation_data_obj, a);
-   else if (algorithm == "bogo") sorted = bogo_sort(animation_data_obj, a);
+   if (algorithm == "bubble") bubble_sort(animation_data_obj, a);
+   else if (algorithm == "selection") selection_sort(animation_data_obj, a);
+   else if (algorithm == "insertion") insertion_sort(animation_data_obj, a);
+   else if (algorithm == "merge") merge_sort(animation_data_obj, a, 0, animation_data_obj.size - 1);
+   else if (algorithm == "quick") quick_sort(animation_data_obj, a, 0, animation_data_obj.size - 1);
+   else if (algorithm == "counting") counting_sort(animation_data_obj, a);
+   else if (algorithm == "shell") shell_sort(animation_data_obj, a);
+   else if (algorithm == "bogo") bogo_sort(animation_data_obj, a);
    else {
       cout << "ERROR: Invalid algorithm, bubble sort will be used." << endl;
-      sorted = bubble_sort(animation_data_obj, a);
+      bubble_sort(animation_data_obj, a);
    }
    draw_array(animation_data_obj, a, -1);
    
-   
-   // user closed window
-   if (!sorted) {
-      SDLclose(animation_data_obj);
-      return 0;
-   }
-
-   // array was sorted, keep the window up
-   SDL_Event e;
-   bool quit = false;
-   while(quit == false) {
-      while(SDL_PollEvent(&e)) {
-         if (e.type == SDL_QUIT) {
-            quit = true; 
-         }
-      }
-   }
-
-   
+   window_thread.join();
+   SDL_close(animation_data_obj);
    return 0;
 }
 
