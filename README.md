@@ -2,6 +2,10 @@
 
 This repository contains a C++ program that utilizes SDL 2 to animate multiple sorting algorithms.
 
+| ![mergesort_gif](https://github.com/Shayan-Bathaee/Sort-Visualizer/assets/110195425/981c7676-a1c3-4e4a-9e62-711a102b30af) |
+|:--:| 
+| *Merge sort, 200 elements, 0 delay (RIP frame rate)* |
+
 ## Usage
 ### Installation
 To run this project, follow these steps:
