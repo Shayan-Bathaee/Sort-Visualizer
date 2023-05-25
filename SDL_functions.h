@@ -23,7 +23,7 @@ class animation_data {
       int size = 200;
       int bar_space = 2;
       int bar_width = 4;
-      bool open = true; // determines if user has the window open
+      bool open = true; // determines if user wants the window open
 };
 
 /**
