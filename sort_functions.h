@@ -13,11 +13,11 @@ bool bubble_sort(animation_data &animation_data_obj, int* a) {
         for (int i = 0; i < animation_data_obj.size - 1; i++) {
             if (a[i] > a[i + 1]) {
                 swap(a[i], a[i + 1]);
-                if (!draw_array(animation_data_obj, a, i + 1)) return false; // draw array with the moving element colored
+                if (!draw_array(animation_data_obj, a, i + 1)) return false;
             }
         }
     }
-    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1);
     return true;
 }
 
@@ -29,12 +29,12 @@ bool selection_sort(animation_data &animation_data_obj, int* a) {
             if (a[i] < min) {
                 min = a[i];
                 min_index = i;
-                if (!draw_array(animation_data_obj, a, min_index)) return false; // draw array with the minimum element colored
+                if (!draw_array(animation_data_obj, a, min_index)) return false;
             }
         }
         swap(a[j], a[min_index]);
     }
-    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1);
     return true;
 }
  
@@ -45,14 +45,14 @@ bool insertion_sort(animation_data &animation_data_obj, int* a) {
             if (a[i] > a[inserting]) { // if the element before inserting is greater, swap them
                 swap(a[i], a[inserting]);
                 inserting = i;
-                if (!draw_array(animation_data_obj, a, inserting)) return false; // draw array with inserting colored
+                if (!draw_array(animation_data_obj, a, inserting)) return false;
             }
             else { // inserting is in the correct spot
                 break;
             }
         }
     }
-    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1);
     return true;
 }
 
@@ -83,7 +83,7 @@ bool merge(animation_data &animation_data_obj, int* a, int left_index, int middl
             a[merged_curr] = right_array[right_curr];
             right_curr++;
         }
-        if (!draw_array(animation_data_obj, a, merged_curr)) return false; // draw array with merged_curr colored
+        if (!draw_array(animation_data_obj, a, merged_curr)) return false;
         merged_curr++;
     }
 
@@ -114,7 +114,7 @@ bool merge_sort(animation_data &animation_data_obj, int* a, int left_index, int 
         if (!merge(animation_data_obj, a, left_index, middle_index, right_index)) return false;
 
     }
-    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1);
     return true;
 }
 
@@ -126,11 +126,11 @@ int partition(animation_data &animation_data_obj, int* a, int left_index, int ri
         if (a[i] <= a[pivot_index]) {
             swap(a[i], a[store_index]);
             store_index++;
-            if (!draw_array(animation_data_obj, a, store_index)) return false; // draw array with store_index colored
+            if (!draw_array(animation_data_obj, a, store_index)) return false;
         }
     }
     swap(a[right_index], a[store_index]);
-    if (!draw_array(animation_data_obj, a, store_index)) return false; // draw array with store_index colored
+    if (!draw_array(animation_data_obj, a, store_index)) return false;
     return_pivot_index = store_index;
     return true;
 }
@@ -143,7 +143,7 @@ bool quick_sort(animation_data &animation_data_obj, int* a, int left_index, int 
         if (!quick_sort(animation_data_obj, a, left_index, pivot_index - 1)) return false;
         if (!quick_sort(animation_data_obj, a, pivot_index + 1, right_index)) return false;
     }
-    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1);
     return true;
 }
 
@@ -165,7 +165,7 @@ bool counting_sort(animation_data &animation_data_obj, int* a) {
     int count[max] = {0};
     for (int i = 0; i < animation_data_obj.size; i++) {
         count[a[i]]++;
-        if (!draw_array(animation_data_obj, a, i)) return false; // draw array with index colored
+        if (!draw_array(animation_data_obj, a, i)) return false;
     }
 
     // take cumulative sum
@@ -176,7 +176,7 @@ bool counting_sort(animation_data &animation_data_obj, int* a) {
     // do the sorting magic
     for (int i = animation_data_obj.size - 1; i >= 0; i--) {
         output[count[a[i]] - 1] = a[i];
-        if (!draw_array(animation_data_obj, output, count[a[i] - 1])) return false; // draw output array with changing index colored
+        if (!draw_array(animation_data_obj, output, count[a[i] - 1])) return false;
         count[a[i]]--;
     }
 
@@ -184,7 +184,7 @@ bool counting_sort(animation_data &animation_data_obj, int* a) {
     for (int i = 0; i < animation_data_obj.size; i++) {
         a[i] = output[i];
     }
-    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1);
     return true;
 }
 
@@ -195,13 +195,13 @@ bool shell_sort(animation_data &animation_data_obj, int* a) {
             int j;
             for (j = i; (j >= interval) && (a[j - interval] > tmp); j = j - interval) {
                 a[j] = a[j - interval];
-                if (!draw_array(animation_data_obj, a, j)) return false; // draw output array with the changing index colored
+                if (!draw_array(animation_data_obj, a, j)) return false;
             }
             a[j] = tmp;
-            if (!draw_array(animation_data_obj, a, j)) return false; // draw output array with the changing index colored
+            if (!draw_array(animation_data_obj, a, j)) return false;
         }
     }
-    draw_array(animation_data_obj, a, -1); // draw sorted array in white only
+    draw_array(animation_data_obj, a, -1);
     return true;
 }
 
@@ -213,7 +213,7 @@ bool bogo_sort(animation_data &animation_data_obj, int* a) {
             int j = rand() % (i + 1);
             swap(a[i], a[j]);
         }
-        if (!draw_array(animation_data_obj, a, -1)) return false; // draw array in white only
+        if (!draw_array(animation_data_obj, a, -1)) return false;
         // check if permutation is sorted
         sorted = true;
         for (int i = 0; i < animation_data_obj.size - 1; i++) {

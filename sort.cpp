@@ -9,6 +9,11 @@
 
 using namespace std;
 
+/**
+ * @brief Keeps the window up, and sets animation_data's open attribute to false when user closes the window.
+ * 
+ * @param animation_data_obj 
+ */
 void close_program_check(animation_data &animation_data_obj) {
    SDL_Event e;
    SDL_PollEvent(&e);
@@ -42,6 +47,48 @@ int main(int argc, char* argv[]) {
          else if ((string)argv[i] == "-s") { // size flag
             i++;
             animation_data_obj.size = stoi(argv[i]);
+            // determine bar size
+            switch (animation_data_obj.size) {
+               case 10:
+                  animation_data_obj.bar_space = 40;
+                  animation_data_obj.bar_width = 80;
+                  break;
+               case 25:
+                  animation_data_obj.bar_space = 16;
+                  animation_data_obj.bar_width = 32;
+                  break;
+               case 50:
+                  animation_data_obj.bar_space = 8;
+                  animation_data_obj.bar_width = 16;
+                  break;
+               case 100:
+                  animation_data_obj.bar_space = 4;
+                  animation_data_obj.bar_width = 8;
+                  break;
+               case 200:
+                  animation_data_obj.bar_space = 2;
+                  animation_data_obj.bar_width = 4;
+                  break;
+               case 300: 
+                  animation_data_obj.bar_space = 1;
+                  animation_data_obj.bar_width = 3;
+                  break;
+               case 400:
+                  animation_data_obj.bar_space = 1;
+                  animation_data_obj.bar_width = 2;
+                  break;
+               case 600:
+                  animation_data_obj.bar_space = 1;
+                  animation_data_obj.bar_width = 1;
+                  break;
+               case 1200: 
+                  animation_data_obj.bar_space = 0;
+                  animation_data_obj.bar_width = 1;
+                  break;
+               default:
+                  animation_data_obj.bar_space = 1;
+                  animation_data_obj.bar_width = 1;
+            }
             continue;
          }
          else if ((string)argv[i] == "-d") { // delay flag
@@ -87,6 +134,7 @@ int main(int argc, char* argv[]) {
    }
    draw_array(animation_data_obj, a, -1);
    
+   // wait for user to close window
    window_thread.join();
    SDL_close(animation_data_obj);
    return 0;

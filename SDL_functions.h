@@ -8,25 +8,30 @@
 
 using namespace std;
 
+#define SCREEN_WIDTH 1200
+#define SCREEN_HEIGHT 800
+
+/**
+ * @brief contains the animation data to be passed into functions
+ * 
+ */
 class animation_data {
    public:
       SDL_Window* window = NULL;
       SDL_Renderer* renderer = NULL;
       int delay = 0;
       int size = 200;
-      bool open = true;
+      int bar_space = 2;
+      int bar_width = 4;
+      bool open = true; // determines if user has the window open
 };
 
-#define SCREEN_WIDTH 1200
-#define SCREEN_HEIGHT 800
-
 /**
- * @brief Initializes SDL window and renderer, sets background to black
+ * @brief Initializes SDL window and renderer, and fills the window black.
  * 
- * @param window a pointer to the window
- * @param renderer a pointer to the renderer
- * @return true if SDL was initialized correctly
- * @return false if SDL initialization failed
+ * @param animation_data_obj 
+ * @return true - if the window was created successfully
+ * @return false - if the window could not be created
  */
 bool SDL_init(animation_data &animation_data_obj) {
    // initialize sdl
@@ -55,10 +60,9 @@ bool SDL_init(animation_data &animation_data_obj) {
 }
 
 /**
- * @brief Properly closes SDL by destroying renderer and window
+ * @brief Properly closes animation window
  * 
- * @param window 
- * @param renderer 
+ * @param animation_data_obj 
  */
 void SDL_close(animation_data &animation_data_obj) {
    SDL_DestroyRenderer(animation_data_obj.renderer);
@@ -68,6 +72,15 @@ void SDL_close(animation_data &animation_data_obj) {
    SDL_Quit();
 }
 
+/**
+ * @brief Draws the array in the window
+ * 
+ * @param animation_data_obj 
+ * @param a - array
+ * @param special_index - an index of a bar to draw red (-1 will draw all boxes white)
+ * @return true - if the array was drawn
+ * @return false - if the user has closed the window
+ */
 bool draw_array(animation_data &animation_data_obj, int* a, int special_index) {
    // check if window is open
    if (animation_data_obj.open == false) {
@@ -79,67 +92,23 @@ bool draw_array(animation_data &animation_data_obj, int* a, int special_index) {
    SDL_RenderClear(animation_data_obj.renderer);
    SDL_PumpEvents();
 
-   // determine bar sizes
-   int space, width;
-   switch (animation_data_obj.size) {
-      case 10:
-         space = 40;
-         width = 80;
-         break;
-      case 25:
-         space = 16;
-         width = 32;
-         break;
-      case 50:
-         space = 8;
-         width = 16;
-         break;
-      case 100:
-         space = 4;
-         width = 8;
-         break;
-      case 200:
-         space = 2;
-         width = 4;
-         break;
-      case 300: 
-         space = 1;
-         width = 3;
-         break;
-      case 400:
-         space = 1;
-         width = 2;
-         break;
-      case 600:
-         space = 1;
-         width = 1;
-         break;
-      case 1200: 
-         space = 0;
-         width = 1;
-         break;
-      default:
-         space = 1;
-         width = 1;
-   }
-
    // draw array
    SDL_SetRenderDrawColor(animation_data_obj.renderer, 0xFF, 0xFF, 0xFF, 0xFF);
    int current_start_pos = 0;
    for (int i = 0; i < animation_data_obj.size; i++) {
       if (i == special_index) { // draw this bar in a different color
          SDL_SetRenderDrawColor(animation_data_obj.renderer, 0xFF, 0x00, 0x00, 0xFF);
-         SDL_Rect new_bar = {current_start_pos, SCREEN_HEIGHT - a[i], width, a[i]};
+         SDL_Rect new_bar = {current_start_pos, SCREEN_HEIGHT - a[i], animation_data_obj.bar_width, a[i]};
          SDL_RenderFillRect(animation_data_obj.renderer, &new_bar);
          SDL_PumpEvents();
-         current_start_pos += (width + space);
+         current_start_pos += (animation_data_obj.bar_width + animation_data_obj.bar_space);
          SDL_SetRenderDrawColor(animation_data_obj.renderer, 0xFF, 0xFF, 0xFF, 0xFF);
          continue;
       }
-      SDL_Rect new_bar = {current_start_pos, SCREEN_HEIGHT - a[i], width, a[i]};
+      SDL_Rect new_bar = {current_start_pos, SCREEN_HEIGHT - a[i], animation_data_obj.bar_width, a[i]};
       SDL_RenderFillRect(animation_data_obj.renderer, &new_bar);
       SDL_PumpEvents();
-      current_start_pos += (width + space);
+      current_start_pos += (animation_data_obj.bar_width + animation_data_obj.bar_space);
    }
 
    // delay
