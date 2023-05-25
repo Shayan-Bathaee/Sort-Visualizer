@@ -10,7 +10,7 @@ This repository contains a C++ program that utilizes SDL 2 to animate multiple s
 ### Installation
 To run this project, follow these steps:
 
-1. [Install SDL](https://lazyfoo.net/tutorials/SDL/01_hello_SDL/index.php)
+1. [Install SDL 2.](https://lazyfoo.net/tutorials/SDL/01_hello_SDL/index.php)
 2. Clone this repository.
 3. Open a terminal and navigate to the local repository.
 4. Use the make command to generate the sort executable.
