@@ -10,10 +10,11 @@ This repository contains a C++ program that utilizes SDL 2 to animate multiple s
 ### Installation
 To run this project, follow these steps:
 
-1. Clone this repository.
-2. Open a terminal and navigate to the local repository.
-3. Use the make command to generate the sort executable.
-4. Run ./sort to start the program.
+1. [Install SDL 2.](https://lazyfoo.net/tutorials/SDL/01_hello_SDL/index.php)
+2. Clone this repository.
+3. Open a terminal and navigate to the local repository.
+4. Use the make command to generate the sort executable.
+5. Run ./sort to start the program.
 
 Note: This project is compatible with Linux systems and Mac OS. On Windows, you can run it using WSL or a virtual machine.
 
