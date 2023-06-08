@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
 
          else if ((string)argv[i] == "-s") { // size flag
             i++;
-            // get the size
+            // get the size and check if it's valid
             int tmp_size = stoi(argv[i]);
             int j = 0;
             while (valid_sizes[j]) {
@@ -96,7 +96,7 @@ int main(int argc, char* argv[]) {
    // spawn thread to keep window up
    thread window_thread(close_program_check, ref(ad));
    
-   // build hardcoded array and draw it
+   // create random array and draw it
    int a[ad.size];
    for (int i = 0; i < ad.size; i++) {
       a[i] = rand() % SCREEN_HEIGHT + 1;
